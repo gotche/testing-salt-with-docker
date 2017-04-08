@@ -1,0 +1,22 @@
+version: '2'
+services:
+  salt:
+    image: saltmaster
+    container_name: saltmaster
+    volumes:
+      - $PWD/master:/etc/salt/master
+      - $PWD/pki:/etc/salt/pki
+      - $PWD/states:/srv/salt:ro
+      - $PWD/pillar:/srv/pillar:ro
+      - $PWD/cache/salt/master:/var/cache/salt/master
+  app:
+    image: app
+    container_name: app
+    ports:
+      - 8080:80
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    cap_add:
+      - SYS_ADMIN
+    depends_on:
+      - salt
